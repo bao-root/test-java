@@ -27,6 +27,7 @@ public class AccountDaoImpl implements AccountDao{
             "account_remark, create_time, update_time, user_id)" +
             "values (?, ?, ?, ?, now(), now(), ?)";
     String deleteSql = "delete from tb_account where account_id = ?";
+    String moneySql = "select account_money from tb_account where account_id = ?";
 
     /**
      * 添加记录，返回影响行数
@@ -265,6 +266,37 @@ public class AccountDaoImpl implements AccountDao{
         String sql = "select count(1) from tb_account where account_id = ?";
         Boolean is = jdbcTemplate.queryForObject(sql, Boolean.class, account_id);
         return is;
+    }
+
+    /**
+     * 账户添加余额
+     * @param account_id 账户id
+     * @param account_money 余额
+     * @return
+     */
+    @Override
+    public int outAccount(Integer account_id, Double account_money) {
+        String inSql = "update tb_account set account_money = account_money - ? where account_id = ?";
+        Object[] objs = {account_money, account_id};
+        Object[] objs2 = {account_id};
+        int originalMoney = jdbcTemplate.queryForObject(this.moneySql, int.class, objs2);
+        if(originalMoney < account_money){
+            return -1;
+        }
+        return jdbcTemplate.update(inSql, objs);
+    }
+
+    /**
+     * 账户减少余额
+     * @param account_id 账户id
+     * @param account_money 余额
+     * @return
+     */
+    @Override
+    public int inAccount(Integer account_id, Double account_money) {
+        String inSql = "update tb_account set account_money = account_money + ? where account_id = ?";
+        Object[] objs = {account_money, account_id};
+        return jdbcTemplate.update(inSql, objs);
     }
 }
 

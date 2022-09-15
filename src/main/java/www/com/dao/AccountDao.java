@@ -97,5 +97,28 @@ public interface AccountDao {
     int deleteAccountBatch(Integer[] userIds);
 
     // 5、其他处理函数
+    /**
+     * 通过account_id查询账户是否存在
+     * @param account_id
+     * @return
+     */
     boolean isExist(int account_id);
+
+    // 6、支出收入
+    /**
+     * 账户收入
+     * @param account_id 账户id
+     * @param account_money 余额
+     * @return
+     */
+    int inAccount(Integer account_id, Double account_money);
+
+    /**
+     * 账户支出
+     * @param account_id 账户id
+     * @param account_money 余额
+     * @return
+     */
+    int outAccount(Integer account_id, Double account_money);
+
 }

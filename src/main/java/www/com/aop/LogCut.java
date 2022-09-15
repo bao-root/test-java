@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
  *     切入点：定义要拦截哪些类的哪些方法
  *     通知： 定义拦截之后执行的逻辑
  */
-@Component
-@Aspect // 声明当前类为一个切面
+//@Component
+//@Aspect // 声明当前类为一个切面
 public class LogCut {
 
     /**
@@ -27,7 +27,7 @@ public class LogCut {
      *      ..*.*: 代表当前包下的子包的任意类和任意方法
      *      (..): 方法的参数
      */
-    @Pointcut("execution(* www.com.service..*.*(..))")
+    //@Pointcut("execution(* www.com.service..*.*(..))")
     public void cut(){
 
     }
@@ -36,7 +36,7 @@ public class LogCut {
      * 通过@Before声明前置通知，并将通知指定在切入点上
      * 目标类的执行前执行
      */
-    @Before("cut()")
+    //@Before("cut()")
     public void before(){
         System.out.println("before.....!");
     }
@@ -45,7 +45,7 @@ public class LogCut {
      * 通过@AfterReturning声明返回通知，并将通知指定在切入点上
      * 目标类执行无异常后执行
      */
-    @AfterReturning("cut()")
+    //@AfterReturning("cut()")
     public void beforeReturn(){
         System.out.println("beforeReturn.....!");
     }
@@ -54,7 +54,7 @@ public class LogCut {
      * 通过@AfterThrowing声明异常通知，并将通知指定在切入点上
      * 目标类执行出现异常时执行
      */
-    @AfterThrowing("cut()")
+    //@AfterThrowing("cut()")
     public void afterThrow(){
         System.out.println("afterThrow......!");
     }
@@ -66,7 +66,7 @@ public class LogCut {
      * @param pjp
      * @return
      */
-    @Around("cut()")
+    //@Around("cut()")
     public Object around(ProceedingJoinPoint pjp){
         System.out.println("11111111111111111");
         Object obj = null;
@@ -87,7 +87,7 @@ public class LogCut {
      * 通过@After声明最终通知，并将通知指定在切入点上
      * 不管目标类执行是否异常都会执行
      */
-    @After("cut()")
+    //@After("cut()")
     public void after(){
         System.out.println("after......!");
     }

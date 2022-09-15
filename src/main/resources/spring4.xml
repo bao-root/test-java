@@ -4,19 +4,22 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        https://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:component-scan base-package="www.com" />
 
     <!-- 配置AOP代理 -->
-    <!-- <aop:aspectj-autoproxy /> -->
+    <aop:aspectj-autoproxy />
 
     <!--定时任务 -->
 <!--
@@ -44,5 +47,33 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource" />
     </bean>
+
+    <!-- 配置事务管理 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 配置事务通知 -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <!-- 定义需要处理事务的方法 -->
+        <tx:attributes>
+            <!-- name: 方法名, *是以什么开头的方法进行模糊匹配 -->
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 定义AOP切面 -->
+    <aop:config>
+        <!-- 设置需要拦截的方法 -->
+        <aop:pointcut id="cut" expression="execution(* www.com.service..*.*(..))"/>
+        <!-- 设置通知 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="cut"/>
+    </aop:config>
+
+    <!-- 配置注解 -->
+    <tx:annotation-driven transaction-manager="txManager" />
 
 </beans>
